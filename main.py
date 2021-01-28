@@ -1,7 +1,7 @@
 import argparse
-from p_acquisition.m_acquisition import acquire
-from p_wrangling.m_wrangling import build_data
-from p_reporting.m_reporting import report_csv
+from p_acquisition.m_acquisition import acquire, acquire_bonus
+from p_wrangling.m_wrangling import build_data, build_data_bonus
+from p_reporting.m_reporting import report_csv, report_csv_bonus
 
 def argument_parser():
     """
@@ -9,20 +9,33 @@ def argument_parser():
     """
     parser=argparse.ArgumentParser(description='pass csv file')
     parser.add_argument("-c","--country", help='specify country or type all', type=str)
+    parser.add_argument("-b", "--bonus", help='specify bonus 1 or 2', type=str)
     args=parser.parse_args()
     return args
 
 def main(arguments):
     print("starting process")
+    if arguments.bonus!=None:
+        try:
+            bonus=int(arguments.bonus)
+            if bonus!=1 and bonus!=2:
+                raise ValueError("Sorry, bonus argument only supports the values: \'1\' or \'2\'")
+        except:
+            raise ValueError("Sorry, bonus argument only supports the values: \'1\' or \'2\'")
+        print(f'BONUS TIME!\nBonus {bonus} selected!')
+        bonus_df=acquire_bonus()
+        result=build_data_bonus(bonus_df,bonus)
+        report_csv_bonus(result,bonus)
 
-    raw_df=acquire()
-    clean_df=build_data(raw_df)
-
-    if arguments.country!=None:
-        country=arguments.country
-        report_csv(clean_df,country)
     else:
-        report_csv(clean_df)
+        raw_df=acquire()
+        clean_df=build_data(raw_df)
+
+        if arguments.country!=None:
+            country=arguments.country
+            report_csv(clean_df,country)
+        else:
+            report_csv(clean_df)
     print('process completed')
     return
 
