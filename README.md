@@ -1,107 +1,61 @@
-# Data Project README file
+# Project Module 1 README file by Alvaro Rodriguez
 
-The README file describes the essence of the project playing the most important role. Most visitors will simply scroll down about twice on the README and leave if they are not interested. So, the README file should provide the reason **why** to checkout your project!!!). 
-Bearing that in mind, your job is to: 
-- Tell them what it is (with context).
-- Show them what it looks like in action.
-- Show them how they use it.
-- Tell them any other relevant details.
+## **Introduction and purpose**
 
-![Image](https://res.cloudinary.com/springboard-images/image/upload/q_auto,f_auto,fl_lossy/wordpress/2019/05/aiexcerpt.png)
+This script in Python defines a data pipeline to extract the data from a database, treat it and report it as a csv file. The database is a survey of the opinion and vote intention on the basic income. It  also includes the age, education level and job.
 
----
+The purpose of this script is to report a csv file with a predefined table format based on the data included in the database.  More details can be found in 'instructions.md'.
 
-## **Formatting**
-Your readers will most likely view your README in a browser so please keep that in mind when formatting its content: 
-- Use proper format when necesary (e.g.: `import pandas as pd`). 
-- Categorize content using two or three levels of header beneath. 
-- Make use of **emphasis** to call out important words. 
-- Link to project pages for related libraries you mention. Link to Wikipedia, Wiktionary, even Urban Dictionary definitions for words of which a reader may not be familiar. Make amusing cultural references. 
-- Add links to related projects or services. 
+The main script file is supported by 4 packages: p_acquisition, p_wrangling, p_analysis and p_reporting. Each package contains a module (script) including the functions to support the main script.
 
-> Here you have a markdown cheatsheet [Link](https://commonmark.org/help/) and tutorial [Link](https://commonmark.org/help/tutorial/).
+- On the acquisition package, the information is extracted from the database 'raw_data_project_m1.db'. The request is done in SQL, using SQLite 3 library.
+- On the wrangling package, the dataframe is cleaned and treated. In some cases, it is required the use of APIs to obtain additional information to transform.
+- The analysis package is only a placeholder as the project did not require any specific statistics.
+- On the reporting package, the clean dataframe is exported to a csv file.
 
+The folder 'notebooks' and the file 'drafting.ipynb' were used for development phase and it has no actual use.
 
-## **Start writing ASAP:**
-*Last but not least, by writing your README soon you give yourself some pretty significant advantages. Most importantly, you’re giving yourself a chance to think through the project without the overhead of having to change code every time you change your mind about how something should be organized or what should be included.*
+## **How to use it**
+Basically, you just need to run the main.py script with your Python launcher.
 
+There are some optional arguments that can be used:
 
-## **Suggested Structure:**
+    -c or --country: this argument is used when the user is only interested in a subset. The csv file will be filtered by the selected country.
+    
+    -b or --bonus: it can only take values '1' or '2'. It will launch alternative data pipelines.
+    
+    -d or --delete: when given the values 'Y' or 'y' all the files in the data folder  will be deleted to do a clean download of support information and report.
+    
+If non-supported values are provided, ValueError is raised, except for delete argument, which ignores the input.
 
-### :raising_hand: **Name** 
-Self-explanatory names are best. If the name sounds too vague or unrelated, it may be a signal to move on. It also must be catchy. Images, Logo, Gif or some color is strongly recommended.
+## **Structure**
 
-### :baby: **Status**
-Alpha, Beta, 1.1, Ironhack Data Analytics Final Project, etc... It's OK to write a sentence, too. The goal is to let interested people know where this project is at.
+This is the structure of the main data pipeline:
 
-### :running: **One-liner**
-Having a one-liner that describes the pipeline/api/app is useful for getting an idea of what your code does in slightly greater detail. 
+![Image](images/main_struct.png)
 
-### :computer: **Technology stack**
-Python, Pandas, Scipy, Scikit-learn, etc. Indicate the technological nature of the software, including primary programming language(s), main libraries and whether the software is intended as standalone or as a module in a framework or other ecosystem.
+When given a bonus argument (1 or 2), the alternative pipeline is launched:
 
-### :boom: **Core technical concepts and inspiration**
-Why does it exist? Frame your project for the potential user. Compare/contrast your project with other, similar projects so the user knows how it is different from those projects. Highlight the technical concepts that your project demonstrates or supports. Keep it very brief.
+![Image](images/bonus_struct.png)
 
-### :wrench: **Configuration**
-Requeriments, prerequisites, dependencies, installation instructions.
+The structure is basically the same, but the functions have been adapted to get the requested table format.
 
-### :see_no_evil: **Usage**
-Parameters, return values, known issues, thrown errors.
+The APIs are used to get information from the Internet for treatment of the data. However, to save time, the dictionaries are saved in csv format and accessed in later uses. If you are interested in a clean run (with no previous info), use the argument '-d y'.
 
-### :file_folder: **Folder structure**
-```
-└── project
-    ├── __trash__
-    ├── .gitignore
-    ├── .env
-    ├── requeriments.txt
-    ├── README.md
-    ├── main_script.py
-    ├── notebooks
-    │   ├── notebook1.ipynb
-    │   └── notebook2.ipynb
-    ├── package1
-    │   ├── module1.py
-    │   └── module2.py
-    └── data
-        ├── raw
-        ├── processed
-        └── results
-```
+The output information will be saved in the 'data' folder.
 
-> Do not forget to include `__trash__` and `.env` in `.gitignore` 
+If the main pipeline is selected but no country is selected, the output will be: 'results.csv'.
+If a country is selected, the output will be: '[country]_results.csv'
 
-### :shit: **ToDo**
-Next steps, features planned, known bugs (shortlist).
+For the bonus pipeline, the output will be: 'bonus[n].csv' where n is the bonus selected
 
-### :information_source: **Further info**
-Credits, alternatives, references, license.
-
-### :love_letter: **Contact info**
-Getting help, getting involved, hire me please.
-
----
-
-> Here you have some repo examples:
-- [Onegy](https://github.com/borjauria/Final-Project)
-- [E-VITALOS](https://github.com/marinapm90/E-vitalos)
-- [Movie Founder](https://github.com/Alfagu/final-project-Ironhack-0419mad)
-- [MMELT](https://github.com/Juanjopf19/Ironhack-final-project--MMELT) 
-
-- [ART-ificial intelligence](https://github.com/Juliaroch/Ironhack-final-project-Julia-Roch)
-- [Next-Frida](https://github.com/Pacoanes/Next-Frida)
-- [Art Classification](https://github.com/serguma/art_classification)
-- [Convolutional Neural Network to detect Pneumonia](https://github.com/jmolins89/final-project)
-- [Brain tumor detection project](https://github.com/alonsopdani/brain-tumor-detection-project)
-
-- [Math handwritting recognition](https://github.com/yaakx/Math_handwritting_recognition)
-- [Mamba (OCR-Translator-Assistant)](https://github.com/YonatanRA/OCR-translator-assistant-project)
-
-- [Yummest](https://github.com/almsasantos/Yummest_Food_App)
-- [HackDecó](https://github.com/herreradelduque/Ironhack-Final-Project---HackDeco)
-
-> Here you have some tools and references:
-- [Make a README](https://www.makeareadme.com/)
-- [Awesome README](https://github.com/matiassingers/awesome-readme)
-- [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+## **Libraries used**
+- [argparse](https://docs.python.org/3/library/argparse.html): for passing arguments on command line
+- [os](https://docs.python.org/3/library/os.html): for interaction with the operating system: directories and files.
+- [Pandas](https://pandas.pydata.org/pandas-docs/stable/index.html): for data treatment
+- [sqlite](https://docs.python.org/3/library/sqlite3.html): for sql queries to the database
+- [requests](https://requests.readthedocs.io/en/master/): for api and html queries
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/): for webscraping the html code
+- [re](https://docs.python.org/3/library/re.html): for regular expressions
+- [csv](https://docs.python.org/3/library/csv.html): for csv creation and reading
+- [tqdm](https://tqdm.github.io/): for progress visualization

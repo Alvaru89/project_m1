@@ -50,12 +50,13 @@ def importing_country_code_webscrap():
 def job_dict_api(search_val):
     url = 'http://api.dataatwork.org/v1/jobs/'
     job_dict = {}
-    for val in search_val:
+    for val in tqdm(search_val):
         if val == None:
             job_dict[val] = None
         else:
             res = requests.get(url + val)
             job_dict[val] = res.json()['title']
+    print(' ')
     print('Job dict finished!')
     return job_dict
 
@@ -102,11 +103,11 @@ def create_job_dict_bonus(search_val):
             job_dict[None] = None
         with open('data/job_skills.csv', 'r') as t:
             reader = csv.reader(t)
-            job_skills = {row[0]: eval(row[1]) for row in reader if row[1]!=''}
+            job_skills = {row[0]: eval(row[1]) for row in reader if row[1] != ''}
     else:
-        dict_list=job_skills_dict_api(search_val)
-        job_dict=dict_list[0]
-        job_skills=dict_list[1]
+        dict_list = job_skills_dict_api(search_val)
+        job_dict = dict_list[0]
+        job_skills = dict_list[1]
         with open('data/job_dict.csv', 'w') as f:
             w = csv.writer(f)
             w.writerows(job_dict.items())
@@ -146,7 +147,7 @@ def adding_skills_cols(bonus_df):
     return bonus_df
 
 def adding_skills_cols2(bonus_df,job_skills):
-    skills_df = pd.DataFrame(job_skills).T
+    skills_df = pd.DataFrame(job_skills,dtype=float).T
     bonus_df = bonus_df.merge(skills_df, how='left', left_on='normalized_job_code', right_index=True)
     return bonus_df
 
@@ -188,7 +189,7 @@ def build_data(raw_df) -> pd.DataFrame:
     print('adding job titles...')
     for i in tqdm(raw_df.index):
         raw_df.loc[i, 'Job Title'] = job_dict[raw_df.loc[i, 'normalized_job_code']]
-
+    print(' ')
     print('adding qty and % columns...')
     qty_columns(raw_df)
 
@@ -230,7 +231,7 @@ def build_data_bonus(bonus_df, bonus):
             lambda x: counter(x['question_bbi_2016wave4_basicincome_argumentsfor'], arguments_pro ,arguments_con), axis=1)
         bonus_df['Number of Cons arguments'] = bonus_df.apply(
             lambda x: counter(x['question_bbi_2016wave4_basicincome_argumentsagainst'], arguments_pro ,arguments_con), axis=1)
-
+        bonus_df['Quantity']=1
         result = bonus_df.groupby(by='Position').sum()
         return result
 
@@ -247,6 +248,7 @@ def build_data_bonus(bonus_df, bonus):
         dict_list = create_job_dict_bonus(search_val)
         job_dict=dict_list[0]
         job_skills=dict_list[1]
+        print(' ')
         print('adding job title...')
         for i in tqdm(bonus_df.index):
             bonus_df.loc[i, 'Job Title'] = job_dict[bonus_df.loc[i, 'normalized_job_code']]

@@ -1,4 +1,5 @@
 import argparse
+import os
 from p_acquisition.m_acquisition import acquire, acquire_bonus
 from p_wrangling.m_wrangling import build_data, build_data_bonus
 from p_reporting.m_reporting import report_csv, report_csv_bonus
@@ -10,11 +11,20 @@ def argument_parser():
     parser=argparse.ArgumentParser(description='pass csv file')
     parser.add_argument("-c","--country", help='specify country or type all', type=str)
     parser.add_argument("-b", "--bonus", help='specify bonus 1 or 2', type=str)
+    parser.add_argument("-d", "--delete", help='specify Y or y', type=str)
     args=parser.parse_args()
     return args
 
 def main(arguments):
     print("starting process")
+    if arguments.delete != None:
+        if arguments.delete.lower() == 'y':
+            folder= "data"
+            files = os.listdir(folder)
+            csv_files = [file for file in files if file.endswith(".csv")]
+            for file in csv_files:
+                path_to_file = os.path.join(folder, file)
+                os.remove(path_to_file)
     if arguments.bonus!=None:
         try:
             bonus=int(arguments.bonus)
